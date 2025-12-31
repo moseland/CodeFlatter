@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-flatten.py:  produce PROJECT_DUMP.md
-Usage:  python flatten.py  [--root .] [--out PROJECT_DUMP.md] [--no-gitignore] [--ignore-file FILE]
+flatten.py  –  produce PROJECT_DUMP.md
+Usage:  python flatten.py  [--root .] [--out PROJECT_DUMP.md] [--no-gitignore] [--ignore-file FILE] [--line-numbers]
 
 Ignores:
   - .gitignore patterns (unless --no-gitignore is set)
@@ -101,14 +101,18 @@ def dump_file(root: Path, file: Path, patterns, args):
     try:
         src = file.read_text(encoding='utf-8')
     except Exception as e:
-        return f""
+        return f"<!-- error reading {file}: {e} -->"
+    
+    if args.line_numbers:
+        lines = src.splitlines()
+        src = '\n'.join(f"{i+1:4d} | {line}" for i, line in enumerate(lines))
+
     rel = file.relative_to(root)
     ext = file.suffix.lower()
     lang = mimetypes.types_map.get(ext, '').split('/')[-1] or ext.lstrip('.')
     return f'<details>\n<summary><code>{rel}</code></summary>\n\n```{lang}\n{src}\n```\n\n</details>\n'
 
 def normalize_args(arg_list):
-    """Splits comma-separated arguments into a flat list."""
     if not arg_list:
         return []
     flat = []
@@ -126,7 +130,8 @@ def main():
     ap.add_argument('--skip-path', action='append', default=[])
     ap.add_argument('--no-gitignore', action='store_true', help="Do not use .gitignore for patterns")
     ap.add_argument('--ignore-file', help="Path to a custom file containing ignore patterns")
-    
+    ap.add_argument('--line-numbers', action='store_true', help="Add line numbers to source code blocks")
+
     args = ap.parse_args()
     args.skip_name = normalize_args(args.skip_name)
     args.skip_ext = normalize_args(args.skip_ext)
@@ -156,8 +161,11 @@ def main():
             if dumped:
                 out_lines.append(dumped)
 
-    Path(args.out).write_text('\n'.join(out_lines), encoding='utf-8')
-    print(f"Wrote {args.out} ({len(out_lines)} lines)")
+    full_content = '\n'.join(out_lines)
+    Path(args.out).write_text(full_content, encoding='utf-8')
+    
+    token_est = int(len(full_content) / 4)
+    print(f"Wrote {args.out} ({len(out_lines)} lines, approx {token_est} tokens)")
 
 if __name__ == '__main__':
     main()
