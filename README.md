@@ -22,7 +22,7 @@ Generate a self-contained PROJECT\_DUMP.md file with
 
 python flatten.py \--root ./my-project \--out PROJECT\_DUMP.md
 
-### **Ignoring stuff**
+### **Options & Filtering**
 
 You can skip files using .gitignore (default), custom ignore files, or command-line flags. Arguments support multiple flags or comma-separated lists.
 
@@ -34,6 +34,7 @@ You can skip files using .gitignore (default), custom ignore files, or command-l
 | \--skip-path | relative path | dist/\*\* |
 | \--no-gitignore | Ignore .gitignore file | (flag) |
 | \--ignore-file | Use custom ignore file | .my\_custom\_ignore |
+| \--line-numbers | Add line numbers to code | (flag) |
 
 **Examples:**
 
