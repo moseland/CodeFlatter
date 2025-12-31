@@ -1,6 +1,11 @@
+## replace-start: README.md
 # **CodeFlatter**
 
-A tiny pair of Python scripts that
+🚧 Active-hobby code—expect the occasional bug.
+
+Found one? Open an issue or PR\!
+
+A tiny pair of zero-dependency Python scripts that
 
 1. **flatten** a project folder into a single markdown report  
 2. let an LLM (or you) **patch the project back** by pasting blocks into stdin
@@ -88,3 +93,4 @@ Pipe its response straight into ai\_patch.py.
 ## **License**
 
 MIT – do what you want.
+## replace-end
